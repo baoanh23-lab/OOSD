@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Quản lý khách sạn</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="header">
+        <h1>QUẢN LÝ KHÁCH SẠN</h1>
+        <p>Hệ thống quản lý khách sạn</p>
+    </header>
+
+
+    <!-- MENU -->
+    <main class="container">
+
+        <div class="menu">
+
+            <button onclick="window.location.href='/danhmuc'">
+                <span class="icon">📋</span>
+                <span>Danh mục</span>
+            </button>
+
+            <button onclick="window.location.href='/phongtiennghi'">
+                <span class="icon">🏨</span>
+                <span>Phòng & Tiện nghi</span>
+            </button>
+
+            <button onclick="window.location.href='/dat-phong'">
+                <span class="icon">📝</span>
+                <span>Đặt phòng</span>
+            </button>
+
+            <button onclick="window.location.href='/dich-vu'">
+                <span class="icon">☕</span>
+                <span>Dịch vụ</span>
+            </button>
+
+            <button onclick="window.location.href='/tra-phong'">
+                <span class="icon">🚪</span>
+                <span>Trả phòng</span>
+            </button>
+
+            <button onclick="window.location.href='/thong-ke'">
+                <span class="icon">📊</span>
+                <span>Thống kê</span>
+            </button>
+
+        </div>
+
+        <!-- THOÁT -->
+        <div class="exit-area">
+            <button class="btn-exit" onclick="thoat()">
+                Thoát
+            </button>
+        </div>
+
+    </main>
+
+
+    <script src="js/main.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Danh mục - Quản lý khách sạn</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            color: #333;
+        }
+
+        .header {
+            background-color: #1f4e79;
+            color: white;
+            padding: 20px 30px;
+        }
+
+        .header h1 {
+            margin-bottom: 5px;
+        }
+
+        .container {
+            width: 95%;
+            margin: 25px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .btn-back {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 5px;
+            background-color: #777;
+            color: white;
+            cursor: pointer;
+        }
+
+        .btn-back:hover {
+            background-color: #555;
+        }
+
+        /* TAB */
+
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 20px;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            padding: 12px 20px;
+            border: none;
+            background-color: #e9ecef;
+            cursor: pointer;
+            font-size: 15px;
+            border-radius: 5px 5px 0 0;
+        }
+
+        .tab-button:hover {
+            background-color: #d5d9dd;
+        }
+
+        .tab-button.active {
+            background-color: #1f4e79;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* BẢNG */
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+        }
+
+        th {
+            background-color: #1f4e79;
+            color: white;
+            padding: 10px;
+            text-align: left;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* FORM */
+
+        .form-box {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 20px;
+        }
+
+        .form-box h3 {
+            margin-bottom: 15px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            flex: 1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 9px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .btn-add {
+            background-color: #198754;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-add:hover {
+            background-color: #146c43;
+        }
+
+        .section-title {
+            margin-bottom: 15px;
+        }
+
+        .empty {
+            text-align: center;
+            color: #777;
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+    <h1>QUẢN LÝ KHÁCH SẠN</h1>
+    <p>Danh mục</p>
+</header>
+
+<div class="container">
+
+    <div class="top-bar">
+        <h2>Quản lý danh mục</h2>
+
+        <button class="btn-back"
+                onclick="window.location.href='/'">
+            ← Quay lại
+        </button>
+    </div>
+
+
+    <!-- ================= TAB ================= -->
+
+    <div class="tabs">
+
+        <button class="tab-button active"
+                onclick="openTab(event, 'khu-vuc')">
+            Khu vực
+        </button>
+
+        <button class="tab-button"
+                onclick="openTab(event, 'nhan-vien')">
+            Nhân viên
+        </button>
+
+        <button class="tab-button"
+                onclick="openTab(event, 'loai-tien-nghi')">
+            Loại tiện nghi
+        </button>
+
+        <button class="tab-button"
+                onclick="openTab(event, 'dich-vu')">
+            Dịch vụ
+        </button>
+
+        <button class="tab-button"
+                onclick="openTab(event, 'quy-dinh')">
+            Quy định đền bù
+        </button>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- KHU VỰC -->
+    <!-- ================================================= -->
+
+    <div id="khu-vuc" class="tab-content active">
+
+        <h3 class="section-title">
+            Danh sách khu vực
+        </h3>
+
+        <table>
+
+            <thead>
+            <tr>
+                <th>Mã khu vực</th>
+                <th>Tên khu vực</th>
+            </tr>
+            </thead>
+
+            <tbody id="tableKhuVuc">
+
+            </tbody>
+
+        </table>
+
+
+        <div class="form-box">
+
+            <h3>Thêm khu vực</h3>
+
+            <form id="formKhuVuc">
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label>Mã khu vực</label>
+
+                        <input type="text"
+                               id="maKhu"
+                               placeholder="Nhập mã khu vực"
+                               required>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Tên khu vực</label>
+
+                        <input type="text"
+                               id="tenKhu"
+                               placeholder="Nhập tên khu vực"
+                               required>
+
+                    </div>
+
+                </div>
+
+                <button class="btn-add" type="submit">
+                    + Thêm khu vực
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- NHÂN VIÊN -->
+    <!-- ================================================= -->
+
+    <div id="nhan-vien" class="tab-content">
+
+        <h3 class="section-title">
+            Danh sách nhân viên
+        </h3>
+
+        <table>
+
+            <thead>
+            <tr>
+                <th>Mã NV</th>
+                <th>Họ tên</th>
+                <th>Vai trò</th>
+                <th>Số điện thoại</th>
+            </tr>
+            </thead>
+
+            <tbody id="tableNhanVien">
+
+            </tbody>
+
+        </table>
+
+
+        <div class="form-box">
+
+            <h3>Thêm nhân viên</h3>
+
+            <form id="formNhanVien">
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label>Mã nhân viên</label>
+
+                        <input type="text"
+                               id="maNV"
+                               required>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Họ tên</label>
+
+                        <input type="text"
+                               id="tenNV"
+                               required>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label>Vai trò</label>
+
+                        <input type="text"
+                               id="vaiTroNV"
+                               required>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Số điện thoại</label>
+
+                        <input type="text"
+                               id="sdtNV">
+
+                    </div>
+
+                </div>
+
+                <button class="btn-add" type="submit">
+                    + Thêm nhân viên
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- LOẠI TIỆN NGHI -->
+    <!-- ================================================= -->
+
+    <div id="loai-tien-nghi" class="tab-content">
+
+        <h3 class="section-title">
+            Danh sách loại tiện nghi
+        </h3>
+
+        <table>
+
+            <thead>
+            <tr>
+                <th>Mã loại</th>
+                <th>Tên loại tiện nghi</th>
+            </tr>
+            </thead>
+
+            <tbody id="tableLoaiTienNghi">
+
+            </tbody>
+
+        </table>
+
+
+        <div class="form-box">
+
+            <h3>Thêm loại tiện nghi</h3>
+
+            <form id="formLoaiTienNghi">
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label>Mã loại</label>
+
+                        <input type="text"
+                               id="maLoaiTN"
+                               required>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Tên loại tiện nghi</label>
+
+                        <input type="text"
+                               id="tenLoaiTN"
+                               required>
+
+                    </div>
+
+                </div>
+
+                <button class="btn-add" type="submit">
+                    + Thêm loại tiện nghi
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- DỊCH VỤ -->
+    <!-- ================================================= -->
+
+    <div id="dich-vu" class="tab-content">
+
+        <h3 class="section-title">
+            Danh sách dịch vụ
+        </h3>
+
+        <table>
+
+            <thead>
+            <tr>
+                <th>Mã DV</th>
+                <th>Tên dịch vụ</th>
+                <th>Đơn vị tính</th>
+                <th>Đơn giá</th>
+            </tr>
+            </thead>
+
+            <tbody id="tableDichVu">
+
+            </tbody>
+
+        </table>
+
+
+        <div class="form-box">
+
+            <h3>Thêm dịch vụ</h3>
+
+            <form id="formDichVu">
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label>Mã dịch vụ</label>
+
+                        <input type="text"
+                               id="maDV"
+                               required>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Tên dịch vụ</label>
+
+                        <input type="text"
+                               id="tenDV"
+                               required>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label>Đơn vị tính</label>
+
+                        <input type="text"
+                               id="dvtDV"
+                               required>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Đơn giá</label>
+
+                        <input type="number"
+                               id="giaDV"
+                               min="0"
+                               step="1000"
+                               required>
+
+                    </div>
+
+                </div>
+
+                <button class="btn-add" type="submit">
+                    + Thêm dịch vụ
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- QUY ĐỊNH ĐỀN BÙ -->
+    <!-- ================================================= -->
+
+    <div id="quy-dinh" class="tab-content">
+
+        <h3 class="section-title">
+            Danh sách quy định đền bù
+        </h3>
+
+        <table>
+
+            <thead>
+            <tr>
+                <th>Mã quy định</th>
+                <th>Loại tiện nghi</th>
+                <th>Mức độ thiệt hại</th>
+                <th>Mức đền bù</th>
+            </tr>
+            </thead>
+
+            <tbody id="tableQuyDinh">
+
+            </tbody>
+
+        </table>
+
+
+        <div class="form-box">
+
+            <h3>Thêm quy định đền bù</h3>
+
+            <form id="formQuyDinh">
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label>Mã quy định</label>
+
+                        <input type="text"
+                               id="maQD"
+                               required>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Loại tiện nghi</label>
+
+                        <select id="maLoaiQd"
+                                required>
+
+                            <option value="">
+                                -- Chọn loại tiện nghi --
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label>Mức độ thiệt hại</label>
+
+                        <input type="text"
+                               id="mucDoQD"
+                               required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>Mức đền bù</label>
+
+                        <input type="number"
+                               id="tienQD"
+                               min="0"
+                               step="1000"
+                               required>
+
+                    </div>
+
+                </div>
+
+
+                <button class="btn-add" type="submit">
+                    + Thêm quy định
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    const API = "http://localhost:8080/api/danh-muc";
+
+
+    // =====================================================
+    // TAB
+    // =====================================================
+
+    function openTab(event, tabId) {
+
+        let contents =
+            document.querySelectorAll(".tab-content");
+
+        contents.forEach(function(content) {
+            content.classList.remove("active");
+        });
+
+
+        let buttons =
+            document.querySelectorAll(".tab-button");
+
+        buttons.forEach(function(button) {
+            button.classList.remove("active");
+        });
+
+
+        document.getElementById(tabId)
+            .classList.add("active");
+
+        event.currentTarget
+            .classList.add("active");
+    }
+
+
+    // =====================================================
+    // KHU VỰC
+    // =====================================================
+
+    async function loadKhuVuc() {
+
+        const response =
+            await fetch(API + "/khu-vuc");
+
+        const data =
+            await response.json();
+
+        const table =
+            document.getElementById("tableKhuVuc");
+
+        table.innerHTML = "";
+
+        data.forEach(function(khu) {
+
+            table.innerHTML += `
+                <tr>
+                    <td>${khu.maKhuVuc}</td>
+                    <td>${khu.tenKhuVuc}</td>
+                </tr>
+            `;
+
+        });
+    }
+
+
+    document.getElementById("formKhuVuc")
+        .addEventListener("submit", async function(event) {
+
+            event.preventDefault();
+
+            const ma =
+                document.getElementById("maKhu").value;
+
+            const ten =
+                document.getElementById("tenKhu").value;
+
+
+            const formData = new URLSearchParams();
+
+            formData.append("ma", ma);
+            formData.append("ten", ten);
+
+
+            const response =
+                await fetch(API + "/khu-vuc", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/x-www-form-urlencoded"
+                    },
+
+                    body: formData
+
+                });
+
+
+            const message =
+                await response.text();
+
+            alert(message);
+
+            document.getElementById("formKhuVuc").reset();
+
+            loadKhuVuc();
+
+        });
+
+
+    // =====================================================
+    // NHÂN VIÊN
+    // =====================================================
+
+    async function loadNhanVien() {
+
+        const response =
+            await fetch(API + "/nhan-vien");
+
+        const data =
+            await response.json();
+
+        const table =
+            document.getElementById("tableNhanVien");
+
+        table.innerHTML = "";
+
+        data.forEach(function(nv) {
+
+            table.innerHTML += `
+                <tr>
+                    <td>${nv.maNV}</td>
+                    <td>${nv.hoTen}</td>
+                    <td>${nv.vaiTro}</td>
+                    <td>${nv.soDienThoai ?? ""}</td>
+                </tr>
+            `;
+
+        });
+    }
+
+
+    document.getElementById("formNhanVien")
+        .addEventListener("submit", async function(event) {
+
+            event.preventDefault();
+
+            const formData =
+                new URLSearchParams();
+
+            formData.append(
+                "ma",
+                document.getElementById("maNV").value
+            );
+
+            formData.append(
+                "ten",
+                document.getElementById("tenNV").value
+            );
+
+            formData.append(
+                "vaiTro",
+                document.getElementById("vaiTroNV").value
+            );
+
+            formData.append(
+                "sdt",
+                document.getElementById("sdtNV").value
+            );
+
+
+            const response =
+                await fetch(API + "/nhan-vien", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/x-www-form-urlencoded"
+                    },
+
+                    body: formData
+
+                });
+
+
+            const message =
+                await response.text();
+
+            alert(message);
+
+            document.getElementById("formNhanVien").reset();
+
+            loadNhanVien();
+
+        });
+
+
+    // =====================================================
+    // LOẠI TIỆN NGHI
+    // =====================================================
+
+    async function loadLoaiTienNghi() {
+
+        const response =
+            await fetch(API + "/loai-tien-nghi");
+
+        const data =
+            await response.json();
+
+        const table =
+            document.getElementById("tableLoaiTienNghi");
+
+        const select =
+            document.getElementById("maLoaiQd");
+
+        table.innerHTML = "";
+
+        select.innerHTML = `
+            <option value="">
+                -- Chọn loại tiện nghi --
+            </option>
+        `;
+
+
+        data.forEach(function(loai) {
+
+            table.innerHTML += `
+                <tr>
+                    <td>${loai.maLoaiTN}</td>
+                    <td>${loai.tenLoaiTN}</td>
+                </tr>
+            `;
+
+
+            select.innerHTML += `
+                <option value="${loai.maLoaiTN}">
+                    ${loai.tenLoaiTN}
+                </option>
+            `;
+
+        });
+    }
+
+
+    document.getElementById("formLoaiTienNghi")
+        .addEventListener("submit", async function(event) {
+
+            event.preventDefault();
+
+            const formData =
+                new URLSearchParams();
+
+            formData.append(
+                "ma",
+                document.getElementById("maLoaiTN").value
+            );
+
+            formData.append(
+                "ten",
+                document.getElementById("tenLoaiTN").value
+            );
+
+
+            const response =
+                await fetch(API + "/loai-tien-nghi", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/x-www-form-urlencoded"
+                    },
+
+                    body: formData
+
+                });
+
+
+            const message =
+                await response.text();
+
+            alert(message);
+
+            document.getElementById("formLoaiTienNghi")
+                .reset();
+
+            loadLoaiTienNghi();
+
+        });
+
+
+    // =====================================================
+    // DỊCH VỤ
+    // =====================================================
+
+    async function loadDichVu() {
+
+        const response =
+            await fetch(API + "/dich-vu");
+
+        const data =
+            await response.json();
+
+        const table =
+            document.getElementById("tableDichVu");
+
+        table.innerHTML = "";
+
+        data.forEach(function(dv) {
+
+            table.innerHTML += `
+                <tr>
+                    <td>${dv.maDV}</td>
+                    <td>${dv.tenDV}</td>
+                    <td>${dv.donViTinh}</td>
+                    <td>${dv.donGia}</td>
+                </tr>
+            `;
+
+        });
+    }
+
+
+    document.getElementById("formDichVu")
+        .addEventListener("submit", async function(event) {
+
+            event.preventDefault();
+
+            const formData =
+                new URLSearchParams();
+
+            formData.append(
+                "ma",
+                document.getElementById("maDV").value
+            );
+
+            formData.append(
+                "ten",
+                document.getElementById("tenDV").value
+            );
+
+            formData.append(
+                "dvt",
+                document.getElementById("dvtDV").value
+            );
+
+            formData.append(
+                "gia",
+                document.getElementById("giaDV").value
+            );
+
+
+            const response =
+                await fetch(API + "/dich-vu", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/x-www-form-urlencoded"
+                    },
+
+                    body: formData
+
+                });
+
+
+            const message =
+                await response.text();
+
+            alert(message);
+
+            document.getElementById("formDichVu")
+                .reset();
+
+            loadDichVu();
+
+        });
+
+
+    // =====================================================
+    // QUY ĐỊNH ĐỀN BÙ
+    // =====================================================
+
+    async function loadQuyDinh() {
+
+        const response =
+            await fetch(API + "/quy-dinh-den-bu");
+
+        const data =
+            await response.json();
+
+        const table =
+            document.getElementById("tableQuyDinh");
+
+        table.innerHTML = "";
+
+        data.forEach(function(qd) {
+
+            let tenLoai = "";
+
+            if (qd.loaiTienNghi) {
+                tenLoai =
+                    qd.loaiTienNghi.tenLoaiTN;
+            }
+
+
+            table.innerHTML += `
+                <tr>
+                    <td>${qd.maQuyDinh}</td>
+                    <td>${tenLoai}</td>
+                    <td>${qd.mucDoThietHai}</td>
+                    <td>${qd.mucDenBu}</td>
+                </tr>
+            `;
+
+        });
+    }
+
+
+    document.getElementById("formQuyDinh")
+        .addEventListener("submit", async function(event) {
+
+            event.preventDefault();
+
+            const formData =
+                new URLSearchParams();
+
+            formData.append(
+                "ma",
+                document.getElementById("maQD").value
+            );
+
+            formData.append(
+                "maLoaiTN",
+                document.getElementById("maLoaiQd").value
+            );
+
+            formData.append(
+                "mucDo",
+                document.getElementById("mucDoQD").value
+            );
+
+            formData.append(
+                "tien",
+                document.getElementById("tienQD").value
+            );
+
+
+            const response =
+                await fetch(API + "/quy-dinh-den-bu", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/x-www-form-urlencoded"
+                    },
+
+                    body: formData
+
+                });
+
+
+            const message =
+                await response.text();
+
+            alert(message);
+
+            document.getElementById("formQuyDinh")
+                .reset();
+
+            loadQuyDinh();
+
+        });
+
+
+    // =====================================================
+    // LOAD DỮ LIỆU BAN ĐẦU
+    // =====================================================
+
+    loadKhuVuc();
+    loadNhanVien();
+    loadLoaiTienNghi();
+    loadDichVu();
+    loadQuyDinh();
+
+</script>
+
+</body>
+
+</html>

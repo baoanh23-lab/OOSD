@@ -1,0 +1,1052 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Quản lý phòng và tiện nghi</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f6f9;
+            color: #333;
+        }
+
+        .container {
+            width: 95%;
+            margin: 25px auto;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+
+        .tab-button {
+            padding: 12px 20px;
+            border: none;
+            background: #ddd;
+            cursor: pointer;
+            border-radius: 5px 5px 0 0;
+            font-size: 15px;
+        }
+
+        .tab-button.active {
+            background: #3498db;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            padding: 20px;
+            border-radius: 0 5px 5px 5px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-box {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #3498db;
+            color: white;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-add {
+            margin-top: 24px;
+        }
+
+        h2 {
+            margin-bottom: 15px;
+            color: #34495e;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        table th,
+        table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        table th {
+            background: #3498db;
+            color: white;
+        }
+
+        table tr:nth-child(even) {
+            background: #f8f8f8;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 15px;
+            color: #777;
+        }
+
+        @media (max-width: 768px) {
+            .form-box {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab-button {
+                border-radius: 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Quản lý phòng và tiện nghi</h1>
+
+    <!-- ========================= -->
+    <!-- TAB -->
+    <!-- ========================= -->
+
+    <div class="tabs">
+
+        <button class="tab-button active"
+                onclick="moTab('phong', this)">
+            Quản lý phòng
+        </button>
+
+        <button class="tab-button"
+                onclick="moTab('tien-nghi', this)">
+            Quản lý tiện nghi
+        </button>
+
+        <button class="tab-button"
+                onclick="moTab('lap-dat', this)">
+            Phiếu lắp đặt
+        </button>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- PHÒNG -->
+    <!-- ========================= -->
+
+    <div id="phong" class="tab-content active">
+
+        <h2>Thêm phòng</h2>
+
+        <div class="form-box">
+
+            <div class="form-group">
+                <label>Số phòng</label>
+
+                <input type="text"
+                       id="soPhong"
+                       placeholder="Ví dụ: P101">
+            </div>
+
+            <div class="form-group">
+                <label>Khu vực</label>
+
+                <select id="khuVuc">
+                    <option value="">-- Chọn khu vực --</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Số người tối đa</label>
+
+                <input type="number"
+                       id="soNguoiToiDa"
+                       min="1"
+                       value="1">
+            </div>
+
+            <div class="form-group">
+                <label>Đơn giá ngày</label>
+
+                <input type="number"
+                       id="donGiaNgay"
+                       min="0"
+                       step="1000"
+                       placeholder="Ví dụ: 500000">
+            </div>
+
+            <div>
+                <button class="btn btn-add"
+                        onclick="themPhong()">
+                    Thêm phòng
+                </button>
+            </div>
+
+        </div>
+
+
+        <h2>Danh sách phòng</h2>
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Số phòng</th>
+                    <th>Khu vực</th>
+                    <th>Số người tối đa</th>
+                    <th>Đơn giá ngày</th>
+                    <th>Trạng thái</th>
+                </tr>
+            </thead>
+
+            <tbody id="bangPhong">
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- TIỆN NGHI -->
+    <!-- ========================= -->
+
+    <div id="tien-nghi" class="tab-content">
+
+        <h2>Thêm tiện nghi</h2>
+
+        <div class="form-box">
+
+            <div class="form-group">
+                <label>Mã tiện nghi</label>
+
+                <input type="text"
+                       id="maTienNghi"
+                       placeholder="Ví dụ: TN001">
+            </div>
+
+            <div class="form-group">
+                <label>Loại tiện nghi</label>
+
+                <select id="loaiTienNghi">
+                    <option value="">-- Chọn loại tiện nghi --</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Số thứ tự</label>
+
+                <input type="number"
+                       id="soThuTu"
+                       min="1"
+                       value="1">
+            </div>
+
+            <div class="form-group">
+                <label>Tình trạng hiện tại</label>
+
+                <input type="text"
+                       id="tinhTrangTienNghi"
+                       placeholder="Ví dụ: Tốt">
+            </div>
+
+            <div>
+                <button class="btn btn-add"
+                        onclick="themTienNghi()">
+                    Thêm tiện nghi
+                </button>
+            </div>
+
+        </div>
+
+
+        <h2>Danh sách tiện nghi</h2>
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Mã tiện nghi</th>
+                    <th>Loại tiện nghi</th>
+                    <th>Số thứ tự</th>
+                    <th>Tình trạng hiện tại</th>
+                </tr>
+            </thead>
+
+            <tbody id="bangTienNghi">
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- LẮP ĐẶT -->
+    <!-- ========================= -->
+
+    <div id="lap-dat" class="tab-content">
+
+        <h2>Lập phiếu lắp đặt</h2>
+
+        <div class="form-box">
+
+            <div class="form-group">
+                <label>Số phiếu</label>
+
+                <input type="text"
+                       id="soPhieu"
+                       placeholder="Ví dụ: PLD001">
+            </div>
+
+            <div class="form-group">
+                <label>Tiện nghi</label>
+
+                <select id="chonTienNghi">
+                    <option value="">-- Chọn tiện nghi --</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Phòng</label>
+
+                <select id="chonPhong">
+                    <option value="">-- Chọn phòng --</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Ngày lắp</label>
+
+                <input type="date"
+                       id="ngayLap">
+            </div>
+
+            <div class="form-group">
+                <label>Tình trạng</label>
+
+                <input type="text"
+                       id="tinhTrangLapDat"
+                       placeholder="Ví dụ: Tốt">
+            </div>
+
+            <div class="form-group">
+                <label>Nhân viên</label>
+
+                <select id="chonNhanVien">
+                    <option value="">-- Chọn nhân viên --</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Ghi chú</label>
+
+                <input type="text"
+                       id="ghiChu"
+                       placeholder="Ghi chú">
+            </div>
+
+            <div>
+                <button class="btn btn-add"
+                        onclick="lapDat()">
+                    Lập phiếu
+                </button>
+            </div>
+
+        </div>
+
+
+        <h2>Danh sách phiếu lắp đặt</h2>
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Số phiếu</th>
+                    <th>Mã tiện nghi</th>
+                    <th>Phòng</th>
+                    <th>Ngày lắp</th>
+                    <th>Tình trạng</th>
+                    <th>Nhân viên</th>
+                    <th>Ghi chú</th>
+                </tr>
+            </thead>
+
+            <tbody id="bangLapDat">
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    const API_PHONG_TN =
+        "http://localhost:8080/api/phong-tien-nghi";
+
+    const API_DM =
+        "http://localhost:8080/api/danh-muc";
+
+
+    // =========================
+    // CHUYỂN TAB
+    // =========================
+
+    function moTab(id, button) {
+
+        document.querySelectorAll(".tab-content")
+            .forEach(tab => {
+                tab.classList.remove("active");
+            });
+
+        document.querySelectorAll(".tab-button")
+            .forEach(btn => {
+                btn.classList.remove("active");
+            });
+
+        document.getElementById(id)
+            .classList.add("active");
+
+        button.classList.add("active");
+    }
+
+
+    // =========================
+    // LOAD KHU VỰC
+    // =========================
+
+    async function loadKhuVuc() {
+
+        try {
+
+            const response =
+                await fetch(`${API_DM}/khu-vuc`);
+
+            const data =
+                await response.json();
+
+            const select =
+                document.getElementById("khuVuc");
+
+            select.innerHTML =
+                '<option value="">-- Chọn khu vực --</option>';
+
+            data.forEach(item => {
+
+                select.innerHTML += `
+                    <option value="${item.maKhuVuc}">
+                        ${item.tenKhuVuc}
+                    </option>
+                `;
+
+            });
+
+        } catch (error) {
+
+            console.error("Lỗi load khu vực:", error);
+
+        }
+    }
+
+
+    // =========================
+    // LOAD LOẠI TIỆN NGHI
+    // =========================
+
+    async function loadLoaiTienNghi() {
+
+        try {
+
+            const response =
+                await fetch(`${API_DM}/loai-tien-nghi`);
+
+            const data =
+                await response.json();
+
+            console.log("Danh sách loại tiện nghi:", data);
+
+            const select =
+                document.getElementById("loaiTienNghi");
+
+            select.innerHTML =
+                '<option value="">-- Chọn loại tiện nghi --</option>';
+
+            data.forEach(item => {
+
+                select.innerHTML += `
+                    <option value="${item.maLoaiTN}">
+                        ${item.tenLoaiTN}
+                    </option>
+                `;
+
+            });
+
+        } catch (error) {
+
+            console.error("Lỗi load loại tiện nghi:", error);
+
+        }
+    }
+
+
+    // =========================
+    // LOAD NHÂN VIÊN
+    // =========================
+
+    async function loadNhanVien() {
+
+        try {
+
+            const response =
+                await fetch(`${API_DM}/nhan-vien`);
+
+            const data =
+                await response.json();
+
+            const select =
+                document.getElementById("chonNhanVien");
+
+            select.innerHTML =
+                '<option value="">-- Chọn nhân viên --</option>';
+
+            data.forEach(item => {
+
+                select.innerHTML += `
+                    <option value="${item.maNV}">
+                        ${item.hoTen}
+                    </option>
+                `;
+
+            });
+
+        } catch (error) {
+
+            console.error("Lỗi load nhân viên:", error);
+
+        }
+    }
+
+
+    // =========================
+    // LOAD PHÒNG
+    // =========================
+
+    async function loadPhong() {
+
+        try {
+
+            const response =
+                await fetch(`${API_PHONG_TN}/phong`);
+
+            const data =
+                await response.json();
+
+            const table =
+                document.getElementById("bangPhong");
+
+            const select =
+                document.getElementById("chonPhong");
+
+            table.innerHTML = "";
+
+            select.innerHTML =
+                '<option value="">-- Chọn phòng --</option>';
+
+            data.forEach(item => {
+
+                const tenKhu =
+                    item.khuVuc
+                        ? item.khuVuc.tenKhuVuc
+                        : "";
+
+                table.innerHTML += `
+                    <tr>
+                        <td>${item.soPhong}</td>
+                        <td>${tenKhu}</td>
+                        <td>${item.soNguoiToiDa}</td>
+                        <td>${item.donGiaNgay}</td>
+                        <td>${item.trangThai}</td>
+                    </tr>
+                `;
+
+                select.innerHTML += `
+                    <option value="${item.soPhong}">
+                        ${item.soPhong}
+                    </option>
+                `;
+
+            });
+
+        } catch (error) {
+
+            console.error("Lỗi load phòng:", error);
+
+        }
+    }
+
+
+    // =========================
+    // LOAD TIỆN NGHI
+    // =========================
+
+    async function loadTienNghi() {
+
+        try {
+
+            const response =
+                await fetch(`${API_PHONG_TN}/tien-nghi`);
+
+            const data =
+                await response.json();
+
+            console.log("Danh sách tiện nghi:", data);
+
+            const table =
+                document.getElementById("bangTienNghi");
+
+            const select =
+                document.getElementById("chonTienNghi");
+
+            table.innerHTML = "";
+
+            select.innerHTML =
+                '<option value="">-- Chọn tiện nghi --</option>';
+
+            data.forEach(item => {
+
+                const tenLoai =
+                    item.loaiTienNghi
+                        ? item.loaiTienNghi.tenLoaiTN
+                        : "";
+
+                table.innerHTML += `
+                    <tr>
+                        <td>${item.maTienNghi}</td>
+                        <td>${tenLoai}</td>
+                        <td>${item.soThuTu}</td>
+                        <td>${item.tinhTrangHienTai || ""}</td>
+                    </tr>
+                `;
+
+                select.innerHTML += `
+                    <option value="${item.maTienNghi}">
+                        ${item.maTienNghi}
+                    </option>
+                `;
+
+            });
+
+        } catch (error) {
+
+            console.error("Lỗi load tiện nghi:", error);
+
+        }
+    }
+
+
+    // =========================
+    // LOAD PHIẾU LẮP ĐẶT
+    // =========================
+
+    async function loadLapDat() {
+
+        try {
+
+            const response =
+                await fetch(`${API_PHONG_TN}/lap-dat`);
+
+            const data =
+                await response.json();
+
+            const table =
+                document.getElementById("bangLapDat");
+
+            table.innerHTML = "";
+
+            data.forEach(item => {
+
+                const maTN =
+                    item.tienNghi
+                        ? item.tienNghi.maTienNghi
+                        : "";
+
+                const soPhong =
+                    item.phong
+                        ? item.phong.soPhong
+                        : "";
+
+                const maNV =
+                    item.nhanVien
+                        ? item.nhanVien.maNV
+                        : "";
+
+                table.innerHTML += `
+                    <tr>
+                        <td>${item.soPhieuLapDat}</td>
+                        <td>${maTN}</td>
+                        <td>${soPhong}</td>
+                        <td>${item.ngayLap}</td>
+                        <td>${item.tinhTrang}</td>
+                        <td>${maNV}</td>
+                        <td>${item.ghiChu || ""}</td>
+                    </tr>
+                `;
+
+            });
+
+        } catch (error) {
+
+            console.error("Lỗi load phiếu lắp đặt:", error);
+
+        }
+    }
+
+
+    // =========================
+    // THÊM PHÒNG
+    // =========================
+
+    async function themPhong() {
+
+        const so =
+            document.getElementById("soPhong").value.trim();
+
+        const khu =
+            document.getElementById("khuVuc").value;
+
+        const max =
+            document.getElementById("soNguoiToiDa").value;
+
+        const gia =
+            document.getElementById("donGiaNgay").value;
+
+        if (!so || !khu || !max || gia === "") {
+
+            alert("Vui lòng nhập đầy đủ thông tin phòng.");
+
+            return;
+        }
+
+        const params =
+            new URLSearchParams();
+
+        params.append("so", so);
+        params.append("khu", khu);
+        params.append("max", max);
+        params.append("gia", gia);
+
+        try {
+
+            const response =
+                await fetch(`${API_PHONG_TN}/phong`, {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/x-www-form-urlencoded"
+                    },
+
+                    body: params
+                });
+
+            const message =
+                await response.text();
+
+            alert(message);
+
+            if (response.ok) {
+
+                document.getElementById("soPhong").value = "";
+
+                document.getElementById("soNguoiToiDa").value = 1;
+
+                document.getElementById("donGiaNgay").value = "";
+
+                loadPhong();
+            }
+
+        } catch (error) {
+
+            alert("Không kết nối được với server.");
+
+            console.error("Lỗi thêm phòng:", error);
+
+        }
+    }
+
+
+    // =========================
+    // THÊM TIỆN NGHI
+    // =========================
+
+    async function themTienNghi() {
+
+        const ma =
+            document.getElementById("maTienNghi").value.trim();
+
+        const loai =
+            document.getElementById("loaiTienNghi").value;
+
+        const stt =
+            document.getElementById("soThuTu").value;
+
+        const tinhTrang =
+            document.getElementById("tinhTrangTienNghi").value.trim();
+
+
+        // KIỂM TRA DỮ LIỆU
+        console.log("========== THÊM TIỆN NGHI ==========");
+        console.log("MA:", ma);
+        console.log("LOAI:", loai);
+        console.log("STT:", stt);
+        console.log("TINH TRANG:", tinhTrang);
+
+
+        if (!ma || !loai || !stt) {
+
+            alert("Vui lòng nhập đầy đủ thông tin tiện nghi.");
+
+            return;
+        }
+
+
+        const params =
+            new URLSearchParams();
+
+        params.append("ma", ma);
+        params.append("loai", loai);
+        params.append("stt", stt);
+        params.append("tinhTrang", tinhTrang);
+
+
+        // KIỂM TRA DỮ LIỆU GỬI SERVER
+        console.log("Dữ liệu gửi lên server:");
+        console.log(params.toString());
+
+
+        try {
+
+            const response =
+                await fetch(`${API_PHONG_TN}/tien-nghi`, {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/x-www-form-urlencoded"
+                    },
+
+                    body: params
+                });
+
+
+            const message =
+                await response.text();
+
+
+            console.log("HTTP STATUS:", response.status);
+            console.log("SERVER:", message);
+
+
+            alert(message);
+
+
+            if (response.ok) {
+
+                document.getElementById("maTienNghi").value = "";
+
+                document.getElementById("soThuTu").value = 1;
+
+                document.getElementById("tinhTrangTienNghi").value = "";
+
+                loadTienNghi();
+            }
+
+        } catch (error) {
+
+            console.error("Lỗi thêm tiện nghi:", error);
+
+            alert("Không kết nối được với server.");
+        }
+    }
+
+
+    // =========================
+    // LẬP ĐẶT
+    // =========================
+
+    async function lapDat() {
+
+        const soPhieu =
+            document.getElementById("soPhieu").value.trim();
+
+        const maTN =
+            document.getElementById("chonTienNghi").value;
+
+        const soPhong =
+            document.getElementById("chonPhong").value;
+
+        const ngay =
+            document.getElementById("ngayLap").value;
+
+        const tinhTrang =
+            document.getElementById("tinhTrangLapDat").value.trim();
+
+        const maNV =
+            document.getElementById("chonNhanVien").value;
+
+        const ghiChu =
+            document.getElementById("ghiChu").value.trim();
+
+
+        if (!soPhieu ||
+            !maTN ||
+            !soPhong ||
+            !ngay ||
+            !tinhTrang ||
+            !maNV) {
+
+            alert("Vui lòng nhập đầy đủ thông tin phiếu lắp đặt.");
+
+            return;
+        }
+
+
+        const params =
+            new URLSearchParams();
+
+        params.append("soPhieu", soPhieu);
+        params.append("maTN", maTN);
+        params.append("soPhong", soPhong);
+        params.append("ngay", ngay);
+        params.append("tinhTrang", tinhTrang);
+        params.append("maNV", maNV);
+        params.append("ghiChu", ghiChu);
+
+
+        try {
+
+            const response =
+                await fetch(`${API_PHONG_TN}/lap-dat`, {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/x-www-form-urlencoded"
+                    },
+
+                    body: params
+                });
+
+
+            const message =
+                await response.text();
+
+
+            alert(message);
+
+
+            if (response.ok) {
+
+                document.getElementById("soPhieu").value = "";
+
+                document.getElementById("tinhTrangLapDat").value = "";
+
+                document.getElementById("ghiChu").value = "";
+
+                loadLapDat();
+
+                loadTienNghi();
+            }
+
+        } catch (error) {
+
+            alert("Không kết nối được với server.");
+
+            console.error("Lỗi lập phiếu:", error);
+
+        }
+    }
+
+
+    // =========================
+    // LOAD TẤT CẢ KHI MỞ TRANG
+    // =========================
+
+    window.onload = function () {
+
+        loadKhuVuc();
+
+        loadLoaiTienNghi();
+
+        loadNhanVien();
+
+        loadPhong();
+
+        loadTienNghi();
+
+        loadLapDat();
+
+    };
+
+</script>
+
+</body>
+</html>
+

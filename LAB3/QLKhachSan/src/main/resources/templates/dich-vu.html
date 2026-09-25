@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Ghi nhận dịch vụ</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 12px;
+            align-items: center;
+        }
+
+        input,
+        select {
+            padding: 9px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 25px;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 25px;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background: #eee;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Ghi nhận dịch vụ</h2>
+
+    <div class="form-grid">
+
+        <label>Phiếu đang ở:</label>
+
+        <select id="cboLuot" onchange="chonPhieu()">
+            <option value="">-- Chọn phiếu --</option>
+        </select>
+
+
+        <label>Phòng hiện tại:</label>
+
+        <input type="text"
+               id="txtPhong"
+               readonly>
+
+
+        <label>Dịch vụ:</label>
+
+        <select id="cboDV">
+            <option value="">-- Chọn dịch vụ --</option>
+        </select>
+
+
+        <label>Ngày sử dụng:</label>
+
+        <input type="date"
+               id="dtNgay">
+
+
+        <label>Nhân viên:</label>
+
+        <select id="cboNV">
+            <option value="">-- Chọn nhân viên --</option>
+        </select>
+
+
+        <label>Số lượng:</label>
+
+        <input type="number"
+               id="numSL"
+               min="1"
+               value="1">
+
+    </div>
+
+
+    <button onclick="ghiNhan()">
+        Ghi nhận
+    </button>
+
+
+    <h2>Lịch sử dịch vụ</h2>
+
+    <table>
+
+        <thead>
+
+        <tr>
+            <th>Số phiếu DV</th>
+            <th>Phòng</th>
+            <th>Ngày sử dụng</th>
+            <th>Dịch vụ</th>
+            <th>Số lượng</th>
+            <th>Đơn giá</th>
+            <th>Thành tiền</th>
+        </tr>
+
+        </thead>
+
+        <tbody id="dgvLichSu">
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+<script>
+
+    const API = "/api/dich-vu";
+
+    let danhSachPhieu = [];
+
+
+    // =========================
+    // LOAD
+    // =========================
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        document.getElementById("dtNgay").value =
+            new Date().toISOString().split("T")[0];
+
+        taiDuLieu();
+
+    });
+
+
+    async function taiDuLieu() {
+
+        await taiPhieuDangO();
+        await taiDichVu();
+        await taiNhanVien();
+
+    }
+
+
+    // =========================
+    // PHIẾU ĐANG Ở
+    // =========================
+
+    async function taiPhieuDangO() {
+
+        try {
+
+            const res =
+                await fetch(API + "/phieu-dang-o");
+
+            if (!res.ok) {
+                throw new Error("Không lấy được phiếu đang ở");
+            }
+
+            danhSachPhieu = await res.json();
+
+            const cbo =
+                document.getElementById("cboLuot");
+
+            cbo.innerHTML =
+                '<option value="">-- Chọn phiếu --</option>';
+
+            danhSachPhieu.forEach(p => {
+
+                const option =
+                    document.createElement("option");
+
+                option.value = p.soPhieuDat;
+
+                option.textContent =
+                    p.soPhieuDat +
+                    " - " +
+                    (p.hoTen || "");
+
+                cbo.appendChild(option);
+
+            });
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert("Không tải được danh sách phiếu đang ở.");
+
+        }
+    }
+
+
+    // =========================
+    // CHỌN PHIẾU
+    // =========================
+
+    function chonPhieu() {
+
+        const soPhieu =
+            document.getElementById("cboLuot").value;
+
+        const phieu =
+            danhSachPhieu.find(
+                p => p.soPhieuDat === soPhieu
+            );
+
+        if (!phieu) {
+
+            document.getElementById("txtPhong").value = "";
+
+            document.getElementById("dgvLichSu").innerHTML = "";
+
+            return;
+        }
+
+        document.getElementById("txtPhong").value =
+            phieu.soPhong || "";
+
+        taiLichSu(soPhieu);
+
+    }
+
+
+    // =========================
+    // DỊCH VỤ
+    // =========================
+
+    async function taiDichVu() {
+
+        try {
+
+            const res =
+                await fetch(API);
+
+            const data =
+                await res.json();
+
+            const cbo =
+                document.getElementById("cboDV");
+
+            cbo.innerHTML =
+                '<option value="">-- Chọn dịch vụ --</option>';
+
+            data.forEach(dv => {
+
+                const option =
+                    document.createElement("option");
+
+                option.value = dv.maDV;
+
+                option.textContent =
+                    dv.tenDV +
+                    " - " +
+                    Number(dv.donGia).toLocaleString("vi-VN") +
+                    " đ";
+
+                cbo.appendChild(option);
+
+            });
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert("Không tải được danh sách dịch vụ.");
+
+        }
+    }
+
+
+    // =========================
+    // NHÂN VIÊN
+    // =========================
+
+    async function taiNhanVien() {
+
+        try {
+
+            const res =
+                await fetch("/api/nhan-vien");
+
+            const data =
+                await res.json();
+
+            const cbo =
+                document.getElementById("cboNV");
+
+            cbo.innerHTML =
+                '<option value="">-- Chọn nhân viên --</option>';
+
+            data.forEach(nv => {
+
+                const option =
+                    document.createElement("option");
+
+                option.value = nv.maNV;
+
+                option.textContent =
+                    nv.hoTen;
+
+                cbo.appendChild(option);
+
+            });
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert("Không tải được nhân viên.");
+
+        }
+    }
+
+
+    // =========================
+    // LỊCH SỬ
+    // =========================
+
+    async function taiLichSu(soPhieu) {
+
+        try {
+
+            const res =
+                await fetch(
+                    API +
+                    "/lich-su/" +
+                    encodeURIComponent(soPhieu)
+                );
+
+            if (!res.ok) {
+                throw new Error();
+            }
+
+            const data =
+                await res.json();
+
+            const tbody =
+                document.getElementById("dgvLichSu");
+
+            tbody.innerHTML = "";
+
+            data.forEach(item => {
+
+                const tr =
+                    document.createElement("tr");
+
+                tr.innerHTML = `
+                    <td>${item.soPhieuSDDV}</td>
+                    <td>${item.soPhong}</td>
+                    <td>${item.ngaySuDung}</td>
+                    <td>${item.tenDV}</td>
+                    <td>${item.soLuong}</td>
+                    <td>${Number(item.donGia).toLocaleString("vi-VN")} đ</td>
+                    <td>${Number(item.thanhTien).toLocaleString("vi-VN")} đ</td>
+                `;
+
+                tbody.appendChild(tr);
+
+            });
+
+        } catch (error) {
+
+            console.error(error);
+
+        }
+    }
+
+
+    // =========================
+    // GHI NHẬN
+    // =========================
+
+    async function ghiNhan() {
+
+        const soPhieu =
+            document.getElementById("cboLuot").value;
+
+        const soPhong =
+            document.getElementById("txtPhong").value;
+
+        const maDV =
+            document.getElementById("cboDV").value;
+
+        const ngaySuDung =
+            document.getElementById("dtNgay").value;
+
+        const maNV =
+            document.getElementById("cboNV").value;
+
+        const soLuong =
+            Number(document.getElementById("numSL").value);
+
+
+        if (!soPhieu) {
+
+            alert("Vui lòng chọn phiếu đang ở.");
+
+            return;
+        }
+
+
+        if (!soPhong) {
+
+            alert("Không xác định được phòng.");
+
+            return;
+        }
+
+
+        if (!maDV) {
+
+            alert("Vui lòng chọn dịch vụ.");
+
+            return;
+        }
+
+
+        if (!maNV) {
+
+            alert("Vui lòng chọn nhân viên.");
+
+            return;
+        }
+
+
+        if (soLuong <= 0) {
+
+            alert("Số lượng phải lớn hơn 0.");
+
+            return;
+        }
+
+
+        const data = {
+
+            soPhieuDat: soPhieu,
+
+            soPhong: soPhong,
+
+            maDV: maDV,
+
+            ngaySuDung: ngaySuDung,
+
+            maNV: maNV,
+
+            soLuong: soLuong
+
+        };
+
+
+        try {
+
+            const res =
+                await fetch(API + "/ghi-nhan", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify(data)
+
+                });
+
+
+            const message =
+                await res.text();
+
+
+            if (!res.ok) {
+
+                alert(message);
+
+                return;
+            }
+
+
+            alert(message);
+
+            taiLichSu(soPhieu);
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Không thể kết nối tới Spring Boot."
+            );
+
+        }
+
+    }
+
+</script>
+
+</body>
+</html>

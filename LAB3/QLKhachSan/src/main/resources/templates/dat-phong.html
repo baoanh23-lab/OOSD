@@ -1,0 +1,1902 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Quản lý đặt phòng</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #333;
+        }
+
+        .container {
+            width: 95%;
+            margin: 25px auto;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        .section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        input,
+        select {
+            padding: 9px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        button {
+            padding: 9px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 8px;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        button:hover {
+            opacity: 0.85;
+        }
+
+        .btn-primary {
+            background: #198754;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background: #f1f1f1;
+        }
+
+        tbody tr:hover {
+            background: #f8f8f8;
+            cursor: pointer;
+        }
+
+        .button-group {
+            margin-top: 10px;
+        }
+
+        .message {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 900px) {
+
+            .form-grid,
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Quản lý đặt phòng</h1>
+
+
+    <!-- ================================================= -->
+    <!-- KHÁCH HÀNG -->
+    <!-- ================================================= -->
+
+    <div class="section">
+
+        <h2>Thêm khách hàng</h2>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label>Mã khách hàng</label>
+                <input type="text" id="txtMaKH" placeholder="VD: KH01">
+            </div>
+
+            <div class="form-group">
+                <label>Họ tên</label>
+                <input type="text" id="txtTenKH">
+            </div>
+
+            <div class="form-group">
+                <label>CMND/CCCD</label>
+                <input type="text" id="txtCMND">
+            </div>
+
+            <div class="form-group">
+                <label>Quốc tịch</label>
+                <input type="text" id="txtQT" value="Việt Nam">
+            </div>
+
+            <div class="form-group">
+                <label>Số điện thoại</label>
+                <input type="text" id="txtSDT">
+            </div>
+
+        </div>
+
+        <button
+                type="button"
+                class="btn-primary"
+                onclick="themKhach()">
+
+            Thêm khách
+
+        </button>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- THÔNG TIN ĐẶT PHÒNG -->
+    <!-- ================================================= -->
+
+    <div class="section">
+
+        <h2>Thông tin đặt phòng</h2>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>Số phiếu đặt</label>
+
+                <input
+                        type="text"
+                        id="txtSoPhieu"
+                        placeholder="VD: DP01">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Khách hàng</label>
+
+                <select id="cboKhach">
+
+                    <option value="">
+                        -- Chọn khách --
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Nhân viên lễ tân</label>
+
+                <select id="cboNV">
+
+                    <option value="">
+                        -- Chọn nhân viên --
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Kênh đặt</label>
+
+                <select id="cboKenh">
+
+                    <option value="Điện thoại">
+                        Điện thoại
+                    </option>
+
+                    <option value="Website">
+                        Website
+                    </option>
+
+                    <option value="Trực tiếp">
+                        Trực tiếp
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Ngày lập</label>
+
+                <input
+                        type="datetime-local"
+                        id="dtLap">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Ngày nhận</label>
+
+                <input
+                        type="date"
+                        id="dtNhan">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Ngày trả dự kiến</label>
+
+                <input
+                        type="date"
+                        id="dtTra">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Tiền cọc</label>
+
+                <input
+                        type="number"
+                        id="numCoc"
+                        value="0"
+                        min="0">
+
+            </div>
+
+        </div>
+
+
+        <!-- NÚT LƯU -->
+        <div class="button-group">
+
+            <button
+                    type="button"
+                    class="btn-primary"
+                    id="btnLapPhieu"
+                    onclick="lapPhieu()">
+
+                Lưu thông tin đặt phòng
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- CHỌN PHÒNG -->
+    <!-- ================================================= -->
+
+    <div class="two-column">
+
+
+        <!-- DANH SÁCH PHÒNG -->
+
+        <div class="section">
+
+            <h2>Danh sách phòng</h2>
+
+            <table>
+
+                <thead>
+
+                <tr>
+                    <th>Số phòng</th>
+                    <th>Khu vực</th>
+                    <th>Số người tối đa</th>
+                    <th>Đơn giá ngày</th>
+                    <th>Trạng thái</th>
+                </tr>
+
+                </thead>
+
+                <tbody id="dgvPhong">
+                </tbody>
+
+            </table>
+
+
+            <div style="margin-top:15px">
+
+                <label>Số người</label>
+
+                <input
+                        type="number"
+                        id="numSoNguoi"
+                        value="1"
+                        min="1">
+
+            </div>
+
+
+            <button
+                    type="button"
+                    class="btn-primary"
+                    onclick="themPhong()">
+
+                Thêm phòng
+
+            </button>
+
+        </div>
+
+
+        <!-- PHÒNG ĐÃ CHỌN -->
+
+        <div class="section">
+
+            <h2>Phòng đã chọn</h2>
+
+            <table>
+
+                <thead>
+
+                <tr>
+                    <th>Số phòng</th>
+                    <th>Số người</th>
+                    <th>Đơn giá ngày</th>
+                    <th></th>
+                </tr>
+
+                </thead>
+
+                <tbody id="dgvChon">
+                </tbody>
+
+            </table>
+
+
+            <button
+                    type="button"
+                    class="btn-danger"
+                    onclick="boPhong()">
+
+                Bỏ phòng
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- DANH SÁCH PHIẾU -->
+    <!-- ================================================= -->
+
+    <div class="section">
+
+        <h2>Danh sách phiếu đặt phòng</h2>
+
+        <table>
+
+            <thead>
+
+            <tr>
+                <th>Số phiếu</th>
+                <th>Khách hàng</th>
+                <th>Nhân viên</th>
+                <th>Ngày nhận</th>
+                <th>Ngày trả</th>
+                <th>Tiền cọc</th>
+                <th>Trạng thái</th>
+            </tr>
+
+            </thead>
+
+            <tbody id="dgvPhieu">
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- NHẬN PHÒNG -->
+    <!-- ================================================= -->
+
+    <div class="section">
+
+        <h2>Nhận phòng</h2>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>Phiếu được chọn</label>
+
+                <input
+                        type="text"
+                        id="txtPhieuChon"
+                        readonly>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Số phòng</label>
+
+                <input
+                        type="text"
+                        id="txtNguoiPhong">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Họ tên người lưu trú</label>
+
+                <input
+                        type="text"
+                        id="txtNguoiTen">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>CMND/CCCD</label>
+
+                <input
+                        type="text"
+                        id="txtNguoiCMND">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Quốc tịch</label>
+
+                <input
+                        type="text"
+                        id="txtNguoiQT"
+                        value="Việt Nam">
+
+            </div>
+
+        </div>
+
+
+        <button
+                type="button"
+                class="btn-primary"
+                onclick="themNguoi()">
+
+            Thêm người lưu trú
+
+        </button>
+
+
+        <h3 style="margin-top:25px">
+            Người lưu trú
+        </h3>
+
+
+        <table>
+
+            <thead>
+
+            <tr>
+                <th>Mã người</th>
+                <th>Số phòng</th>
+                <th>Họ tên</th>
+                <th>CMND/CCCD</th>
+                <th>Quốc tịch</th>
+            </tr>
+
+            </thead>
+
+            <tbody id="dgvNguoi">
+            </tbody>
+
+        </table>
+
+
+        <button
+                type="button"
+                class="btn-primary"
+                onclick="nhanPhong()">
+
+            Nhận phòng
+
+        </button>
+
+
+        <button
+                type="button"
+                class="btn-warning"
+                onclick="noShow()">
+
+            No-show
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    // =================================================
+    // API
+    // =================================================
+
+    const API_KHACH = "/api/khach-hang";
+    const API_PHONG = "/api/phong";
+    const API_NHAN_VIEN = "/api/nhan-vien";
+    const API_PHIEU = "/api/dat-phong";
+    const API_NGUOI = "/api/nguoi-luu-tru";
+
+
+    // =================================================
+    // BIẾN PHÒNG ĐÃ CHỌN
+    // =================================================
+
+    let phongChon = [];
+
+
+    // =================================================
+    // KHỞI ĐỘNG
+    // =================================================
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // Tự động điền ngày lập hiện tại
+        const now = new Date();
+
+        const localDateTime =
+            now.getFullYear() +
+            "-" +
+            String(now.getMonth() + 1).padStart(2, "0") +
+            "-" +
+            String(now.getDate()).padStart(2, "0") +
+            "T" +
+            String(now.getHours()).padStart(2, "0") +
+            ":" +
+            String(now.getMinutes()).padStart(2, "0");
+
+        document.getElementById("dtLap").value =
+            localDateTime;
+
+
+        taiDuLieu();
+
+    });
+
+
+    // =================================================
+    // TẢI TOÀN BỘ DỮ LIỆU
+    // =================================================
+
+    async function taiDuLieu() {
+
+        await taiKhach();
+
+        await taiNhanVien();
+
+        await taiPhong();
+
+        await taiPhieu();
+
+    }
+
+
+    // =================================================
+    // KHÁCH HÀNG
+    // =================================================
+
+    async function taiKhach() {
+
+        try {
+
+            const response =
+                await fetch(API_KHACH);
+
+            if (!response.ok) {
+
+                console.error(
+                    "Không tải được danh sách khách hàng."
+                );
+
+                return;
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            const cbo =
+                document.getElementById("cboKhach");
+
+
+            cbo.innerHTML =
+                '<option value="">-- Chọn khách --</option>';
+
+
+            data.forEach(khach => {
+
+                const option =
+                    document.createElement("option");
+
+
+                option.value =
+                    khach.maKhach;
+
+
+                option.textContent =
+                    khach.maKhach +
+                    " - " +
+                    khach.hoTen;
+
+
+                cbo.appendChild(option);
+
+            });
+
+        } catch (error) {
+
+            console.error(
+                "Lỗi tải khách hàng:",
+                error
+            );
+
+        }
+
+    }
+
+
+    // =================================================
+    // THÊM KHÁCH
+    // =================================================
+
+    async function themKhach() {
+
+        const khach = {
+
+            maKhach:
+                document
+                    .getElementById("txtMaKH")
+                    .value
+                    .trim(),
+
+            hoTen:
+                document
+                    .getElementById("txtTenKH")
+                    .value
+                    .trim(),
+
+            soCMND:
+                document
+                    .getElementById("txtCMND")
+                    .value
+                    .trim(),
+
+            quocTich:
+                document
+                    .getElementById("txtQT")
+                    .value
+                    .trim(),
+
+            soDienThoai:
+                document
+                    .getElementById("txtSDT")
+                    .value
+                    .trim()
+
+        };
+
+
+        if (
+            !khach.maKhach ||
+            !khach.hoTen ||
+            !khach.soCMND ||
+            !khach.quocTich
+        ) {
+
+            alert(
+                "Vui lòng nhập đầy đủ thông tin khách hàng."
+            );
+
+            return;
+
+        }
+
+
+        try {
+
+            const response =
+                await fetch(API_KHACH, {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify(khach)
+
+                });
+
+
+            const result =
+                await response.text();
+
+
+            if (!response.ok) {
+
+                alert(result);
+
+                return;
+
+            }
+
+
+            alert(
+                "Thêm khách hàng thành công."
+            );
+
+
+            document.getElementById("txtMaKH").value = "";
+            document.getElementById("txtTenKH").value = "";
+            document.getElementById("txtCMND").value = "";
+            document.getElementById("txtSDT").value = "";
+
+
+            await taiKhach();
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Không kết nối được API khách hàng."
+            );
+
+        }
+
+    }
+
+
+    // =================================================
+    // NHÂN VIÊN
+    // =================================================
+
+    async function taiNhanVien() {
+
+        try {
+
+            const response =
+                await fetch(API_NHAN_VIEN);
+
+
+            if (!response.ok) {
+
+                console.error(
+                    "API nhân viên không hoạt động."
+                );
+
+                return;
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            const cbo =
+                document.getElementById("cboNV");
+
+
+            cbo.innerHTML =
+                '<option value="">-- Chọn nhân viên --</option>';
+
+
+            data.forEach(nv => {
+
+                const option =
+                    document.createElement("option");
+
+
+                option.value =
+                    nv.maNV;
+
+
+                option.textContent =
+                    nv.maNV +
+                    " - " +
+                    nv.hoTen;
+
+
+                cbo.appendChild(option);
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "Lỗi tải nhân viên:",
+                error
+            );
+
+        }
+
+    }
+
+
+    // =================================================
+    // PHÒNG
+    // =================================================
+
+    async function taiPhong() {
+
+        try {
+
+            const response =
+                await fetch(API_PHONG);
+
+
+            if (!response.ok) {
+
+                console.error(
+                    "API phòng không hoạt động."
+                );
+
+                return;
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            const tbody =
+                document.getElementById("dgvPhong");
+
+
+            tbody.innerHTML = "";
+
+
+            data.forEach(phong => {
+
+                const row =
+                    document.createElement("tr");
+
+
+                row.innerHTML = `
+
+                    <td>${phong.soPhong}</td>
+
+                    <td>${phong.maKhuVuc ?? ""}</td>
+
+                    <td>${phong.soNguoiToiDa}</td>
+
+                    <td>${phong.donGiaNgay}</td>
+
+                    <td>${phong.trangThai}</td>
+
+                `;
+
+
+                row.onclick =
+                    function () {
+
+                        document
+                            .querySelectorAll(
+                                "#dgvPhong tr"
+                            )
+                            .forEach(r => {
+
+                                r.style.background = "";
+
+                            });
+
+
+                        row.style.background =
+                            "#d9edf7";
+
+
+                        row.dataset.selected =
+                            "true";
+
+                    };
+
+
+                tbody.appendChild(row);
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "Lỗi tải phòng:",
+                error
+            );
+
+        }
+
+    }
+
+
+    // =================================================
+    // THÊM PHÒNG
+    // =================================================
+
+    function themPhong() {
+
+        const rows =
+            document.querySelectorAll(
+                "#dgvPhong tr"
+            );
+
+
+        let selected = null;
+
+
+        rows.forEach(row => {
+
+            if (
+                row.dataset.selected ===
+                "true"
+            ) {
+
+                selected = row;
+
+            }
+
+        });
+
+
+        if (!selected) {
+
+            alert(
+                "Vui lòng chọn phòng."
+            );
+
+            return;
+
+        }
+
+
+        const soPhong =
+            selected.cells[0].textContent;
+
+
+        const soNguoiToiDa =
+            parseInt(
+                selected.cells[2].textContent
+            );
+
+
+        const donGia =
+            selected.cells[3].textContent;
+
+
+        const soNguoi =
+            parseInt(
+                document
+                    .getElementById("numSoNguoi")
+                    .value
+            );
+
+
+        // Kiểm tra số người
+        if (
+            !soNguoi ||
+            soNguoi <= 0
+        ) {
+
+            alert(
+                "Số người phải lớn hơn 0."
+            );
+
+            return;
+
+        }
+
+
+        // Kiểm tra sức chứa
+        if (
+            soNguoi > soNguoiToiDa
+        ) {
+
+            alert(
+                "Số người vượt quá sức chứa của phòng."
+            );
+
+            return;
+
+        }
+
+
+        // Kiểm tra phòng trùng
+        if (
+            phongChon.some(
+                p =>
+                    p.soPhong ===
+                    soPhong
+            )
+        ) {
+
+            alert(
+                "Phòng đã có trong phiếu."
+            );
+
+            return;
+
+        }
+
+
+        phongChon.push({
+
+            soPhong:
+                soPhong,
+
+            soNguoi:
+                soNguoi,
+
+            donGiaNgay:
+                donGia
+
+        });
+
+
+        hienThiPhongChon();
+
+    }
+
+
+    // =================================================
+    // HIỂN THỊ PHÒNG ĐÃ CHỌN
+    // =================================================
+
+    function hienThiPhongChon() {
+
+        const tbody =
+            document.getElementById(
+                "dgvChon"
+            );
+
+
+        tbody.innerHTML = "";
+
+
+        phongChon.forEach(
+            (phong, index) => {
+
+                const row =
+                    document.createElement(
+                        "tr"
+                    );
+
+
+                row.innerHTML = `
+
+                    <td>${phong.soPhong}</td>
+
+                    <td>${phong.soNguoi}</td>
+
+                    <td>${phong.donGiaNgay}</td>
+
+                    <td>
+                        <button
+                            type="button"
+                            class="btn-danger"
+                            onclick="boPhong(${index})">
+
+                            Bỏ
+
+                        </button>
+                    </td>
+
+                `;
+
+
+                tbody.appendChild(row);
+
+            }
+        );
+
+    }
+
+
+    // =================================================
+    // BỎ PHÒNG
+    // =================================================
+
+    function boPhong(index) {
+
+        if (index === undefined) {
+
+            if (phongChon.length === 0) {
+
+                alert(
+                    "Chưa có phòng nào được chọn."
+                );
+
+                return;
+
+            }
+
+            phongChon.pop();
+
+        } else {
+
+            phongChon.splice(index, 1);
+
+        }
+
+
+        hienThiPhongChon();
+
+    }
+
+
+    // =================================================
+    // LƯU THÔNG TIN ĐẶT PHÒNG
+    // =================================================
+
+    async function lapPhieu() {
+
+        // Kiểm tra số phiếu
+        const soPhieuDat =
+            document
+                .getElementById("txtSoPhieu")
+                .value
+                .trim();
+
+
+        if (!soPhieuDat) {
+
+            alert(
+                "Vui lòng nhập số phiếu đặt."
+            );
+
+            document
+                .getElementById("txtSoPhieu")
+                .focus();
+
+            return;
+
+        }
+
+
+        // Kiểm tra khách
+        const maKhach =
+            document
+                .getElementById("cboKhach")
+                .value;
+
+
+        if (!maKhach) {
+
+            alert(
+                "Vui lòng chọn khách hàng."
+            );
+
+            return;
+
+        }
+
+
+        // Kiểm tra nhân viên
+        const maNVLeTan =
+            document
+                .getElementById("cboNV")
+                .value;
+
+
+        if (!maNVLeTan) {
+
+            alert(
+                "Vui lòng chọn nhân viên lễ tân."
+            );
+
+            return;
+
+        }
+
+
+        // Ngày
+        const ngayLap =
+            document
+                .getElementById("dtLap")
+                .value;
+
+
+        const ngayNhan =
+            document
+                .getElementById("dtNhan")
+                .value;
+
+
+        const ngayTraDuKien =
+            document
+                .getElementById("dtTra")
+                .value;
+
+
+        if (!ngayNhan) {
+
+            alert(
+                "Vui lòng chọn ngày nhận phòng."
+            );
+
+            return;
+
+        }
+
+
+        if (!ngayTraDuKien) {
+
+            alert(
+                "Vui lòng chọn ngày trả dự kiến."
+            );
+
+            return;
+
+        }
+
+
+        if (
+            ngayTraDuKien <
+            ngayNhan
+        ) {
+
+            alert(
+                "Ngày trả phải lớn hơn hoặc bằng ngày nhận."
+            );
+
+            return;
+
+        }
+
+
+        // Kiểm tra phòng
+        if (phongChon.length === 0) {
+
+            alert(
+                "Vui lòng chọn ít nhất một phòng."
+            );
+
+            return;
+
+        }
+
+
+        // Tạo dữ liệu
+        const data = {
+
+            soPhieuDat:
+                soPhieuDat,
+
+            maKhach:
+                maKhach,
+
+            maNVLeTan:
+                maNVLeTan,
+
+            ngayLap:
+                ngayLap,
+
+            ngayNhan:
+                ngayNhan,
+
+            ngayTraDuKien:
+                ngayTraDuKien,
+
+            tienCoc:
+                Number(
+                    document
+                        .getElementById("numCoc")
+                        .value
+                ) || 0,
+
+            kenhDat:
+                document
+                    .getElementById("cboKenh")
+                    .value,
+
+            chiTiet:
+                phongChon
+
+        };
+
+
+        console.log(
+            "Dữ liệu đặt phòng:",
+            data
+        );
+
+
+        // =================================================
+        // GỌI API ĐẶT PHÒNG
+        // =================================================
+
+        try {
+
+            const response =
+                await fetch(
+                    API_PHIEU,
+                    {
+
+                        method: "POST",
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/json"
+
+                        },
+
+                        body:
+                            JSON.stringify(data)
+
+                    }
+                );
+
+
+            const result =
+                await response.text();
+
+
+            if (!response.ok) {
+
+                alert(
+                    result ||
+                    "Không thể lưu phiếu đặt phòng."
+                );
+
+                return;
+
+            }
+
+
+            alert(
+                "Lưu thông tin đặt phòng thành công!"
+            );
+
+
+            // Xóa danh sách phòng đã chọn
+            phongChon = [];
+
+            hienThiPhongChon();
+
+
+            // Tải lại danh sách phiếu
+            await taiPhieu();
+
+
+        } catch (error) {
+
+            console.error(
+                "Lỗi lưu đặt phòng:",
+                error
+            );
+
+
+            alert(
+                "Không kết nối được API /api/dat-phong."
+            );
+
+        }
+
+    }
+
+
+    // =================================================
+    // TẢI DANH SÁCH PHIẾU
+    // =================================================
+
+    async function taiPhieu() {
+
+        try {
+
+            const response =
+                await fetch(API_PHIEU);
+
+
+            if (!response.ok) {
+
+                return;
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            const tbody =
+                document.getElementById(
+                    "dgvPhieu"
+                );
+
+
+            tbody.innerHTML = "";
+
+
+            data.forEach(phieu => {
+
+                const row =
+                    document.createElement(
+                        "tr"
+                    );
+
+
+                row.innerHTML = `
+
+                    <td>
+                        ${phieu.soPhieuDat}
+                    </td>
+
+                    <td>
+                        ${phieu.maKhach}
+                    </td>
+
+                    <td>
+                        ${phieu.maNVLeTan}
+                    </td>
+
+                    <td>
+                        ${phieu.ngayNhan}
+                    </td>
+
+                    <td>
+                        ${phieu.ngayTraDuKien}
+                    </td>
+
+                    <td>
+                        ${phieu.tienCoc}
+                    </td>
+
+                    <td>
+                        ${phieu.trangThai}
+                    </td>
+
+                `;
+
+
+                row.onclick =
+                    function () {
+
+                        document
+                            .querySelectorAll(
+                                "#dgvPhieu tr"
+                            )
+                            .forEach(r => {
+
+                                r.style.background =
+                                    "";
+
+                            });
+
+
+                        row.style.background =
+                            "#d9edf7";
+
+
+                        document
+                            .getElementById(
+                                "txtPhieuChon"
+                            )
+                            .value =
+                            phieu.soPhieuDat;
+
+
+                        taiNguoiLuuTru(
+                            phieu.soPhieuDat
+                        );
+
+                    };
+
+
+                tbody.appendChild(row);
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "Lỗi tải phiếu:",
+                error
+            );
+
+        }
+
+    }
+
+
+    // =================================================
+    // NGƯỜI LƯU TRÚ
+    // =================================================
+
+    async function taiNguoiLuuTru(
+        soPhieu
+    ) {
+
+        try {
+
+            const response =
+                await fetch(
+                    API_NGUOI +
+                    "?soPhieuDat=" +
+                    encodeURIComponent(
+                        soPhieu
+                    )
+                );
+
+
+            if (!response.ok) {
+
+                return;
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            const tbody =
+                document.getElementById(
+                    "dgvNguoi"
+                );
+
+
+            tbody.innerHTML = "";
+
+
+            data.forEach(nguoi => {
+
+                const row =
+                    document.createElement(
+                        "tr"
+                    );
+
+
+                row.innerHTML = `
+
+                    <td>
+                        ${nguoi.maNguoiLT}
+                    </td>
+
+                    <td>
+                        ${nguoi.soPhong}
+                    </td>
+
+                    <td>
+                        ${nguoi.hoTen}
+                    </td>
+
+                    <td>
+                        ${nguoi.soCMND}
+                    </td>
+
+                    <td>
+                        ${nguoi.quocTich}
+                    </td>
+
+                `;
+
+
+                tbody.appendChild(row);
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "Lỗi tải người lưu trú:",
+                error
+            );
+
+        }
+
+    }
+
+
+    // =================================================
+    // THÊM NGƯỜI LƯU TRÚ
+    // =================================================
+
+    async function themNguoi() {
+
+        const data = {
+
+            soPhieuDat:
+                document
+                    .getElementById(
+                        "txtPhieuChon"
+                    )
+                    .value,
+
+            soPhong:
+                document
+                    .getElementById(
+                        "txtNguoiPhong"
+                    )
+                    .value
+                    .trim(),
+
+            hoTen:
+                document
+                    .getElementById(
+                        "txtNguoiTen"
+                    )
+                    .value
+                    .trim(),
+
+            soCMND:
+                document
+                    .getElementById(
+                        "txtNguoiCMND"
+                    )
+                    .value
+                    .trim(),
+
+            quocTich:
+                document
+                    .getElementById(
+                        "txtNguoiQT"
+                    )
+                    .value
+                    .trim()
+
+        };
+
+
+        if (
+            !data.soPhieuDat ||
+            !data.soPhong ||
+            !data.hoTen ||
+            !data.soCMND ||
+            !data.quocTich
+        ) {
+
+            alert(
+                "Vui lòng nhập đầy đủ thông tin."
+            );
+
+            return;
+
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    API_NGUOI,
+                    {
+
+                        method: "POST",
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/json"
+
+                        },
+
+                        body:
+                            JSON.stringify(data)
+
+                    }
+                );
+
+
+            const result =
+                await response.text();
+
+
+            if (!response.ok) {
+
+                alert(result);
+
+                return;
+
+            }
+
+
+            alert(
+                "Thêm người lưu trú thành công."
+            );
+
+
+            await taiNguoiLuuTru(
+                data.soPhieuDat
+            );
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Không kết nối được API người lưu trú."
+            );
+
+        }
+
+    }
+
+
+    // =================================================
+    // NHẬN PHÒNG
+    // =================================================
+
+    async function nhanPhong() {
+
+        const soPhieu =
+            document
+                .getElementById(
+                    "txtPhieuChon"
+                )
+                .value;
+
+
+        if (!soPhieu) {
+
+            alert(
+                "Vui lòng chọn phiếu đặt phòng."
+            );
+
+            return;
+
+        }
+
+
+        alert(
+            "Chức năng nhận phòng sẽ gọi API cho phiếu: "
+            + soPhieu
+        );
+
+    }
+
+
+    // =================================================
+    // NO-SHOW
+    // =================================================
+
+    async function noShow() {
+
+        const soPhieu =
+            document
+                .getElementById(
+                    "txtPhieuChon"
+                )
+                .value;
+
+
+        if (!soPhieu) {
+
+            alert(
+                "Vui lòng chọn phiếu đặt phòng."
+            );
+
+            return;
+
+        }
+
+
+        const xacNhan =
+            confirm(
+                "Bạn có chắc muốn đánh dấu phiếu này là No-show?"
+            );
+
+
+        if (!xacNhan) {
+
+            return;
+
+        }
+
+
+        alert(
+            "Chức năng No-show sẽ gọi API cho phiếu: "
+            + soPhieu
+        );
+
+    }
+
+</script>
+
+</body>
+
+</html>
