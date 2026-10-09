@@ -6,7 +6,7 @@ Mình là sinh viên ngành Công nghệ thông tin tại Trường Đại học
 ---
 
 ### 🌱 Giới thiệu về mình
-- 🎓 **Ngành học:** Công nghệ Thông tin (Lớp: 12_ĐH_CNTT1)
+- 🎓 **Ngành học:** Công nghệ Thông tin (Lớp: 12_ĐH_CNPM1)
 - 💻 **Lĩnh vực quan tâm:** Phát triển Web, Kỹ thuật phần mềm và Ứng dụng GIS
 - 📚 **Đang học:** Lập trình hướng đối tượng nâng cao & Phát triển ứng dụng doanh nghiệp (OOSD)
 - 🚀 **Mục tiêu:** Xây dựng các giải pháp phần mềm ổn định, thân thiện với người dùng và không ngừng nâng cao kỹ năng lập trình
